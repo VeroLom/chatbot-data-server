@@ -1,62 +1,58 @@
 import express from "express";
-import {Database} from "./modules/db";
 import bodyParser from "body-parser";
-
-// DB
-export interface Action {
-   id: number;
-   title: string;
-}
-
-interface DB {
-   actions?: Action[];
-   messages?: any[];
-   settings?: any[];
-}
-
-const initial: DB = { actions: [], messages: [], settings: [] };
-const db = new Database<DB>("./data/db.json", initial);
+import {mockDB, Action, Message, Settings} from './mockData';
 
 const app = express();
+
+// CORS middleware
 app.use(function(req, res, next) {
    res.header("Access-Control-Allow-Origin", "*");
    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+   res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
    next();
 });
-app.use(express.urlencoded({ extended: false }));
+
+// Body parsing middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-
-app.get("/", (req, res) => {
-   res.send('Test API');
+// Routes
+app.get("/api", (req, res) => {
+   res.json({ message: 'API is working' });
 });
 
 app.get("/api/getActions", (req, res) => {
-   res.json(db.data.actions);
+   const actions: Action[] = mockDB.actions;
+   res.json(actions);
 });
 
 app.get("/api/getMessages", (req, res) => {
-   res.json(db.data.messages);
+   const messages: Message[] = mockDB.messages;
+   res.json(messages);
 });
 
 app.get("/api/getSettings", (req, res) => {
-   res.json(db.data.settings)
+   const settings: Settings = mockDB.settings;
+   res.json(settings);
 });
 
 app.post("/api/sendForm", async (req, res) => {
-   console.log("* Form data");
-
    try {
       const formData = req.body;
-      console.log(formData);
-   } catch (e) {
-      console.error(e);
+      console.log("Form data received:", formData);
+      res.json({ success: true, data: formData });
+   } catch (error) {
+      console.error("Error processing form:", error);
+      res.status(500).json({ success: false, error: 'Internal Server Error' });
    }
+});
 
-   res.send('OK');
-})
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+   const port = process.env.PORT || 3333;
+   app.listen(port, () => console.log(`App listening on port ${port}`));
+}
 
-const port = process.env.PORT || 3333;
-
-app.listen(port, () => console.log(`App listening on port ${port}`));
+// Export for Vercel
+export default app;
