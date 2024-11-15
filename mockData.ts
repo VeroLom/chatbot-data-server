@@ -14,32 +14,35 @@ export interface Settings {
     subheader: string;
 }
 
+interface Message {
+    id: number;
+    delay: number;
+    isUser?: boolean;
+    content?: string;
+    optionType?: number;
+    optionsType?: number;
+    options?: Option[];
+}
+
 interface Option {
     id: number;
     name: string;
     value: string | number;
     title: string;
-    image?: string; // Добавлено для поддержки изображений, если они есть
-    badge?: string; // Если присутствует отметка (например, госпрограмма)
-    dependency?: {
-        optionName: string;
-        optionValue: string;
-    }; // Зависимость от других опций
-    type?: string; // Для указания типа данных (например, phone)
+    image?: string;
+    badge?: string;
+    type?: string;
+    dependency?: OptionDependency;
 }
 
-export interface Message {
-    id: number;
-    isUser?: boolean; // Поле может отсутствовать
-    delay: number;
-    content?: string; // Сообщение может быть пустым
-    optionType?: number; // Может отсутствовать, если это обычное сообщение
-    options?: Option[]; // Если есть выбор опций
+interface OptionDependency {
+    optionName: string;
+    optionValue: string;
 }
 
 export interface DB {
     actions: Action[];
-    messages: any[];
+    messages: Message[];
     settings: Settings;
 }
 
@@ -67,101 +70,101 @@ export const mockDB: DB = {
         }
     ],
 
-    "messages": [
+    messages: [
         {
-            "id": 0,
-            "delay": 0,
-            "optionsType": 4,
-            "options": [
+            id: 0,
+            delay: 0,
+            optionsType: 4,
+            options: [
                 {
-                    "id": 1,
-                    "name": "system_email_to",
-                    "value": 608,
-                    "title": "E-mail"
+                    id: 1,
+                    name: "system_email_to",
+                    value: 608,
+                    title: "E-mail"
                 },
                 {
-                    "id": 2,
-                    "name": "system_form_id",
-                    "value": 123,
-                    "title": "Form ID"
+                    id: 2,
+                    name: "system_form_id",
+                    value: 123,
+                    title: "Form ID"
                 },
                 {
-                    "id": 3,
-                    "name": "data[new][model]",
-                    "value": 0,
-                    "title": "Model"
+                    id: 3,
+                    name: "data[new][model]",
+                    value: 0,
+                    title: "Model"
                 },
                 {
-                    "id": 4,
-                    "name": "data[new][package]",
-                    "value": 0,
-                    "title": "Package"
+                    id: 4,
+                    name: "data[new][package]",
+                    value: 0,
+                    title: "Package"
                 },
                 {
-                    "id": 5,
-                    "name": "data[new][name]",
-                    "value": "",
-                    "title": "Name"
+                    id: 5,
+                    name: "data[new][name]",
+                    value: "",
+                    title: "Name"
                 },
                 {
-                    "id": 6,
-                    "name": "data[new][phone]",
-                    "value": "",
-                    "title": "Phone"
+                    id: 6,
+                    name: "data[new][phone]",
+                    value: "",
+                    title: "Phone"
                 }
             ]
         },
         {
-            "id": 1,
-            "isUser": false,
-            "content": "Hello!<br />My name is Moskvichka. I am an online consultant at the MOSKVICH dealership",
-            "delay": 1000
+            id: 1,
+            isUser: false,
+            content: "Hello!<br />My name is Moskvichka. I am an online consultant at the MOSKVICH dealership",
+            delay: 1000
         },
         {
-            "id": 2,
-            "isUser": false,
-            "content": "Please answer a few questions so I can offer you the best option",
-            "delay": 1000
+            id: 2,
+            isUser: false,
+            content: "Please answer a few questions so I can offer you the best option",
+            delay: 1000
         },
         {
-            "id": 3,
-            "isUser": false,
-            "content": "Which car model are you considering?<br />Choose a car from the list below",
-            "delay": 500
+            id: 3,
+            isUser: false,
+            content: "Which car model are you considering?<br />Choose a car from the list below",
+            delay: 500
         },
         {
-            "id": 4,
-            "isUser": false,
-            "delay": 100,
-            "optionType": 0,
-            "options": [
+            id: 4,
+            isUser: false,
+            delay: 100,
+            optionType: 0,
+            options: [
                 {
-                    "id": 3,
-                    "name": "data[new][model]",
-                    "value": "Moskvich 3",
-                    "title": "Moskvich 3",
-                    "image": "/images/models/moskvich3.png"
+                    id: 3,
+                    name: "data[new][model]",
+                    value: "Moskvich 3",
+                    title: "Moskvich 3",
+                    image: "/images/models/moskvich3.png"
                 },
                 {
-                    "id": 4,
-                    "name": "data[new][model]",
-                    "value": "Moskvich 3e",
-                    "title": "Moskvich 3e",
-                    "image": "/images/models/moskvich3e.png",
-                    "badge": "State support — up to 925,000 rub."
+                    id: 4,
+                    name: "data[new][model]",
+                    value: "Moskvich 3e",
+                    title: "Moskvich 3e",
+                    image: "/images/models/moskvich3e.png",
+                    badge: "State support — up to 925,000 rub."
                 },
                 {
-                    "id": 5,
-                    "name": "data[new][model]",
-                    "value": "Moskvich 6",
-                    "title": "Moskvich 6",
-                    "image": "/images/models/moskvich6.png"
+                    id: 5,
+                    name: "data[new][model]",
+                    value: "Moskvich 6",
+                    title: "Moskvich 6",
+                    image: "/images/models/moskvich6.png"
                 }
             ]
         },
         {
-            "id": 5,
-            "isUser": true
+            id: 5,
+            isUser: true
         },
         {
             "id": 6,
@@ -325,7 +328,6 @@ export const mockDB: DB = {
             "optionType": 5
         }
     ],
-
 
     settings: {
         color: "#0066b2",
